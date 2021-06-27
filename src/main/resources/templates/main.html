@@ -7,7 +7,7 @@
 <body>
 <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="text" name="yeah" value="oh yeah"/>
-    <input type="file" name="uploads" value="choose a image"/>
+    <input type="file" name="uploads" accept="image/png, image/jpeg, image/bmp, image/jpg, image/tif" value="choose a image"/>
     <input type="submit" value="upload it"/>
 </form>
 <p>[[${filePath}]]</p>
@@ -21,7 +21,8 @@
 <div style="border: red 2px dashed">
     <form id="uploadByAjaxForm">
         <input type="text" name="yeah" id="yeah" value="oh yeah"/>
-        <input type="file" name="uploads" id="fileUploader" value="choose a image"/>
+        <input type="file" name="uploads" id="fileUploader" accept="image/png, image/jpeg, image/bmp, image/jpg, image/tif"
+               value="choose a image"/>
     </form>
     <button onclick="uploadByAjax()">Upload</button>
     <img id="ajaxShowImg" alt="">
@@ -30,7 +31,7 @@
 <script>
     function uploadByAjax() {
         var formData = new FormData($('#uploadByAjaxForm')[0]);
-        formData.append("yeah",$('#yeah').val());
+        formData.append("yeah", $('#yeah').val());
         let ajaxSavesTheDay =
             $.ajax({
                 type: "post",
@@ -44,7 +45,7 @@
                 timeout: 5000,
                 success: function (data) {
                     if (data) {
-                        var jsonObj=$.parseJSON(data);
+                        var jsonObj = $.parseJSON(data);
                         $('#ajaxShowImg').attr('src', jsonObj.url);
                         alert(jsonObj.yeah);
                     }
@@ -55,6 +56,22 @@
             });
     }
 
+    $('#fileUploader').change(function () {
+        var ext = this.value.match(/\.([^\.]+)$/)[1];
+        switch (ext) {
+            case 'jpg':
+            case 'jpeg':
+            case 'bmp':
+            case 'png':
+            case 'tif':
+                alert('allowed');
+                break;
+            default:
+                alert('not allowed');
+                this.value = '';
+        }
+        $("#ajaxShowImg").attr("src", URL.createObjectURL($(this)[0].files[0]));
+    })
 </script>
 </body>
 </html>
