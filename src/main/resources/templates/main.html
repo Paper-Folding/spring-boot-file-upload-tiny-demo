@@ -6,6 +6,7 @@
 </head>
 <body>
 <form action="/upload" method="post" enctype="multipart/form-data">
+    <input type="text" name="yeah" value="oh yeah"/>
     <input type="file" name="uploads" value="choose a image"/>
     <input type="submit" value="upload it"/>
 </form>
@@ -19,7 +20,8 @@
 
 <div style="border: red 2px dashed">
     <form id="uploadByAjaxForm">
-        <input type="file" name="uploads" value="choose a image"/>
+        <input type="text" name="yeah" id="yeah" value="oh yeah"/>
+        <input type="file" name="uploads" id="fileUploader" value="choose a image"/>
     </form>
     <button onclick="uploadByAjax()">Upload</button>
     <img id="ajaxShowImg" alt="">
@@ -28,6 +30,7 @@
 <script>
     function uploadByAjax() {
         var formData = new FormData($('#uploadByAjaxForm')[0]);
+        formData.append("yeah",$('#yeah').val());
         let ajaxSavesTheDay =
             $.ajax({
                 type: "post",
@@ -41,7 +44,9 @@
                 timeout: 5000,
                 success: function (data) {
                     if (data) {
-                        $('#ajaxShowImg').attr('src', data);
+                        var jsonObj=$.parseJSON(data);
+                        $('#ajaxShowImg').attr('src', jsonObj.url);
+                        alert(jsonObj.yeah);
                     }
                 },
                 error: function () {

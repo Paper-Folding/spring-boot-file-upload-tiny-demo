@@ -42,25 +42,24 @@ public class UploadController {
         return "main";
     }
 
-    String getFileServerPath(String fileInServerName)
-    {
+    String getFileServerPath(String fileInServerName) {
         return MvcUriComponentsBuilder.fromMethodName(UploadController.class, "serveFile", storageService.loadAsResource(fileInServerName).getFilename().toString()).build().toUri().toString();
     }
 
     @PostMapping("/upload")
-    public String upload(MultipartFile uploads) {
+    public String upload(MultipartFile uploads, @RequestParam String yeah) {
         String newName = UUID.randomUUID().toString() + uploads.getOriginalFilename().substring(uploads.getOriginalFilename().lastIndexOf("."));
         storageService.storeWithSpecifiedFileName(uploads, newName);
+        System.out.println(yeah);
         return "redirect:/";
     }
 
     @PostMapping("/uploadByAjax")
     @ResponseBody
-    public String uploadByAjax(MultipartFile uploads)
-    {
+    public String uploadByAjax(MultipartFile uploads, @RequestParam String yeah) {
         String newName = UUID.randomUUID().toString() + uploads.getOriginalFilename().substring(uploads.getOriginalFilename().lastIndexOf("."));
         storageService.storeWithSpecifiedFileName(uploads, newName);
-        return getFileServerPath(newName);
+        return "{\"yeah\":\"" + yeah + "\",\"url\":\"" + getFileServerPath(newName)+"\"}";
     }
 
     @GetMapping("/files/{filename:.+}")
