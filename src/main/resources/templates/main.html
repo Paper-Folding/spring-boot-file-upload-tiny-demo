@@ -16,5 +16,40 @@
     </li>
 </ul>
 <!--/*<h1 th:text="${oneOfFiles}"></h1>*/-->
+
+<div style="border: red 2px dashed">
+    <form id="uploadByAjaxForm">
+        <input type="file" name="uploads" value="choose a image"/>
+    </form>
+    <button onclick="uploadByAjax()">Upload</button>
+    <img id="ajaxShowImg" alt="">
+</div>
+<script th:src="@{/webjars/jquery/3.6.0/jquery.min.js}"></script>
+<script>
+    function uploadByAjax() {
+        var formData = new FormData($('#uploadByAjaxForm')[0]);
+        let ajaxSavesTheDay =
+            $.ajax({
+                type: "post",
+                url: "/uploadByAjax",
+                dataType: "text",
+                data: formData,
+                async: true,
+                contentType: false,
+                processData: false,
+                cache: false,
+                timeout: 5000,
+                success: function (data) {
+                    if (data) {
+                        $('#ajaxShowImg').attr('src', data);
+                    }
+                },
+                error: function () {
+                    alert("Sorry, data transmit failed!Please check your network!");
+                }
+            });
+    }
+
+</script>
 </body>
 </html>
