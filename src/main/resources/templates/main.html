@@ -7,7 +7,8 @@
 <body>
 <form action="/upload" method="post" enctype="multipart/form-data">
     <input type="text" name="yeah" value="oh yeah"/>
-    <input type="file" name="uploads" accept="image/png, image/jpeg, image/bmp, image/jpg, image/tif" value="choose a image"/>
+    <input type="file" name="uploads" accept="image/png, image/jpeg, image/bmp, image/jpg, image/tif"
+           value="choose a image"/>
     <input type="submit" value="upload it"/>
 </form>
 <p>[[${filePath}]]</p>
@@ -21,7 +22,8 @@
 <div style="border: red 2px dashed">
     <form id="uploadByAjaxForm">
         <input type="text" name="yeah" id="yeah" value="oh yeah"/>
-        <input type="file" name="uploads" id="fileUploader" accept="image/png, image/jpeg, image/bmp, image/jpg, image/tif"
+        <input type="file" name="uploads" id="fileUploader"
+               accept="image/png, image/jpeg, image/bmp, image/jpg, image/tif"
                value="choose a image"/>
     </form>
     <button onclick="uploadByAjax()">Upload</button>
@@ -57,21 +59,34 @@
     }
 
     $('#fileUploader').change(function () {
-        var ext = this.value.match(/\.([^\.]+)$/)[1];
+        if (checkAvatarValidity(this))
+            //preview image
+            $("#ajaxShowImg").attr("src", URL.createObjectURL($(this)[0].files[0]));
+        else
+            $(this).val('');
+    })
+
+    // check avatar validity before uploading it, pass input file object to this function
+    function checkAvatarValidity(avatar) {
+        var ext = avatar.value.match(/\.([^\.]+)$/)[1];
         switch (ext) {
             case 'jpg':
             case 'jpeg':
             case 'bmp':
             case 'png':
             case 'tif':
-                alert('allowed');
                 break;
             default:
-                alert('not allowed');
+                alert('Upload image with jpg,jpeg,bmp,png,tif format only!');
                 this.value = '';
+                return false;
         }
-        $("#ajaxShowImg").attr("src", URL.createObjectURL($(this)[0].files[0]));
-    })
+        if (avatar.files[0].size / 1024.0 > 1 * 1024) {
+            alert('Image size is not allowed to exceed 1Mb!');
+            return false;
+        }
+        return true;
+    }
 </script>
 </body>
 </html>
