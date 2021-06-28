@@ -57,9 +57,11 @@ public class UploadController {
     @PostMapping("/uploadByAjax")
     @ResponseBody
     public String uploadByAjax(MultipartFile uploads, @RequestParam String yeah) {
+        if (uploads == null || uploads.getSize() == 0)
+            return "NULL";
         String newName = UUID.randomUUID().toString() + uploads.getOriginalFilename().substring(uploads.getOriginalFilename().lastIndexOf("."));
         storageService.storeWithSpecifiedFileName(uploads, newName);
-        return "{\"yeah\":\"" + yeah + "\",\"url\":\"" + getFileServerPath(newName)+"\"}";
+        return "{\"yeah\":\"" + yeah + "\",\"url\":\"" + getFileServerPath(newName) + "\"}";
     }
 
     @GetMapping("/files/{filename:.+}")
